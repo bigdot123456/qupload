@@ -40,11 +40,15 @@ var Prefix string
 // config 解析配置文件
 var config CFG
 
+// config 配置文件路径
+var configFile string
+
 func init() {
 	flag.BoolVar(&RequestVersion, "v", false, "查看当前版本")
 	flag.StringVar(&Section, "s", "default", "上传的 Section 空间")
 	flag.StringVar(&Key, "k", "", "指定上传文件的 key")
 	flag.StringVar(&Prefix, "p", "", "指定文件前缀")
+	flag.StringVar(&configFile, "f", "", "指定配置文件")
 	flag.Parse()
 	initConfig()
 }
@@ -128,14 +132,20 @@ BucketDomain = http://***
 # BucketPublic = true # bool
 # BucketDomain = http://***
 	`
-	currentUser, _ := user.Current()
-	homeDir := currentUser.HomeDir
-	quploadPath := filepath.Join(homeDir, ".qupload")
-	_, err := os.Stat(quploadPath)
-	if os.IsNotExist(err) {
-		os.Mkdir(quploadPath, 0711)
+
+	var configPath string
+	if configFile == "" {
+		currentUser, _ := user.Current()
+		homeDir := currentUser.HomeDir
+		quploadPath := filepath.Join(homeDir, ".qupload")
+		_, err := os.Stat(quploadPath)
+		if os.IsNotExist(err) {
+			os.Mkdir(quploadPath, 0711)
+		}
+		configPath = filepath.Join(quploadPath, "qupload.ini")
+	} else {
+		configPath = configFile
 	}
-	configPath := filepath.Join(quploadPath, "qupload.ini")
 
 	cfg, err := ini.Load(configPath)
 	if err != nil {
