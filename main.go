@@ -54,7 +54,7 @@ func init() {
 }
 func main() {
 	if RequestVersion {
-		fmt.Println("v0.0.3")
+		fmt.Println("v0.0.4")
 		return
 	}
 	//配置文件
@@ -98,6 +98,7 @@ func main() {
 	err = formUploader.PutFile(context.Background(), &ret, upToken, Key, localFile, &putExtra)
 	if err != nil {
 		fmt.Println(err)
+		os.Exit(1)
 		return
 	}
 	if BucketPublic {
@@ -110,6 +111,7 @@ func main() {
 	}
 }
 func show(key string, url string) {
+	return 
 	fmt.Println("key :", key)
 	fmt.Println("url : ", url)
 	fmt.Printf("markdown : ![%s](%s)", key, url)
